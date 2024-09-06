@@ -73,11 +73,15 @@ enemies = []
 powerups = []
 powerup_effect_time = 10000  # 10 segundos de efecto para los power-ups
 
+# Carga la imagen del fondo para la pantalla de inicio
+background_image = pygame.image.load("iGu.gif")
+background_image = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
+
 def show_start_screen():
     global player_name
     input_box = pygame.Rect(WINDOW_WIDTH // 2 - 150, WINDOW_HEIGHT // 2 - 25, 300, 50)
-    color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
+    color_inactive = pygame.Color('WHITE')
+    color_active = pygame.Color('WHITE')
     color = color_inactive
     font = pygame.font.Font(None, 48)
     text = ''
@@ -85,7 +89,7 @@ def show_start_screen():
     done = False
 
     while not done:
-        screen.fill(LIGHT_BLUE)
+        screen.blit(background_image, (0, 0))  # Cambia screen.fill() por blit()
 
         # Mostrar el texto de entrada
         txt_surface = font.render(text, True, color)
@@ -95,11 +99,11 @@ def show_start_screen():
         pygame.draw.rect(screen, color, input_box, 2)
 
         # Mostrar instrucciones
-        instructions = font.render("Ingresa tu nombre y presiona Enter", True, BLACK)
+        instructions = font.render("Ingresa tu nombre y presiona Enter", True, WHITE)
         screen.blit(instructions, (WINDOW_WIDTH // 2 - instructions.get_width() // 2, WINDOW_HEIGHT // 2 - 75))
 
         # Mostrar el mensaje para comenzar
-        restart_text = font.render("Presiona Enter para comenzar", True, BLACK)
+        restart_text = font.render("Presiona Enter para comenzar", True, WHITE)
         screen.blit(restart_text, (WINDOW_WIDTH // 2 - restart_text.get_width() // 2, WINDOW_HEIGHT // 2 + 75))
 
         for event in pygame.event.get():
@@ -133,6 +137,7 @@ def show_high_scores():
         json.dump(high_scores, f)
 
     screen.fill(DARK_BLUE)
+    
     title_text = font.render("High Scores", True, WHITE)
     screen.blit(title_text, (WINDOW_WIDTH // 2 - title_text.get_width() // 2, 50))
 
@@ -293,7 +298,7 @@ while running:
                 pygame.time.set_timer(FREEZE_ENEMIES_EVENT, powerup_effect_time)
             powerups.remove(powerup)
 
-    screen.fill(WHITE)
+    screen.fill(BLACK)
     
     score_text = font.render(f"Score: {score}", True, BLACK)
     screen.blit(score_text, (10, 10))
@@ -301,8 +306,13 @@ while running:
     lives_text = font.render("Vidas:", True, BLACK)
     screen.blit(lives_text, (WINDOW_WIDTH - 150, 10))
     
+    # Ajustar el ancho de la imagen del corazón y el espacio entre ellos
+    heart_width = heart_image.get_width()
+    padding = 10  # Espacio entre los corazones
+
     for i in range(lives):
-        screen.blit(heart_image, (WINDOW_WIDTH - 150 + i * 35, 40))
+        x_position = WINDOW_WIDTH - (heart_width + padding) * (max_lives - i) - padding
+        screen.blit(heart_image, (x_position, 40))
 
     screen.blit(dragon_image, dragon_rect)
 
